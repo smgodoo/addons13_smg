@@ -1,0 +1,35 @@
+<odoo>
+    <record id="project_owner_team_group_project_see_all" model="res.groups">
+        <field name="name">Project / See all</field>
+        <field name="category_id" ref="base.module_category_operations_project"/>
+    </record>
+
+    <record id="project_owner_team" model="res.groups">
+        <field name="name">Project / Owner</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="category_id" ref="base.module_category_operations_project"/>
+    </record>
+
+    <record id="project_owner_team_group_project_owner_report" model="ir.rule">
+        <field name="name">Report filter by Assigned to user</field>
+        <field name="model_id" ref="project.model_report_project_task_user"/>
+        <field name="groups" eval="[(4, ref('project_owner_team.project_owner_team'))]"/>
+        <field name="perm_read" eval="1"/>
+         <field name="domain_force">
+            [('user_id','=',user.id)]
+        </field>
+    </record>
+
+    <record id="project_owner_team_group_project_owner" model="ir.rule">
+        <field name="name">See only his/her project</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="groups" eval="[(4, ref('project_owner_team.project_owner_team')),(4, ref('base.group_user')),(4, ref('project.group_project_manager'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+        <field name="domain_force">
+            ['|',('user_id','=',user.id),('user_id','=',False)]
+        </field>
+    </record>
+</odoo>

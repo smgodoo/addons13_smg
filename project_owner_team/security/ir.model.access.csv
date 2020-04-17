@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+project_owner_team_group_project_owner_id,project_owner_team_group_project_owner_name,project.model_project_project,project_owner_team_group_project_owner,1,1,1,1
+project_owner_team_id,project_owner_team_name,project.model_project_project,project_owner_team,1,1,1,1
+project_report_project_task_user_id,project_report_project_task_user_name,project.model_report_project_task_user,project_owner_team,1,1,1,1
