@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_project_team_vt_project_team_vt,project_team_vt.project_team_vt,model_project_team_vt,base.group_user,1,1,1,1
+access_project_team_project_team,project_team.project_team,model_project_team_vt,base.group_user,1,1,1,1

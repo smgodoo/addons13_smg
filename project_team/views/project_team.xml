@@ -62,7 +62,6 @@
         <record id="project_team_vt_action_tree" model="ir.actions.act_window">
             <field name="name">Projects Team Lorem</field>
             <field name="res_model">project.team_vt</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 

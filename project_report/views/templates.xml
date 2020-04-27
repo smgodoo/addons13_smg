@@ -1,24 +1,90 @@
 <odoo>
     <data>
-<!--
-        <template id="listing">
-          <ul>
-            <li t-foreach="objects" t-as="object">
-              <a t-attf-href="#{ root }/objects/#{ object.id }">
-                <t t-esc="object.display_name"/>
-              </a>
-            </li>
-          </ul>
+        <template id="main_template">
+            <div class="o_planning_slog_report_page">
+                <div class="table-responsive">
+                    <table width="100%" class="table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="text-center smg_primary smg_report">SUB DEPARTMENT</th>
+                                <th rowspan="2" class="text-center smg_primary smg_report">ACTIVITY</th>
+                                <th rowspan="2" class="text-center smg_primary smg_report">APPOINT TO</th>
+                                <th rowspan="2" class="text-center smg_primary smg_report">SUMMARY</th>
+                                <th rowspan="2" class="text-center smg_primary smg_report">BUDGET</th>
+                                <th rowspan="2" class="text-center smg_primary smg_report">NOTES</th>
+                                <t t-foreach="options['month_list']" t-as="month">
+                                    <th colspan="4" class="text-center smg_secondary smg_report"><t t-esc="month[1]"/>
+                                    </th>
+                                </t>
+                            </tr>
+                            <tr>
+                                <t t-foreach="options['month_list']" t-as="month">
+                                    <t t-foreach="options['week_in_month']" t-as="week">
+                                        <th class="text-center smg_secondary smg_report"><t t-esc="week"/> </th>
+                                    </t>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </template>
-        <template id="object">
-          <h1><t t-esc="object.display_name"/></h1>
-          <dl>
-            <t t-foreach="object._fields" t-as="field">
-              <dt><t t-esc="field"/></dt>
-              <dd><t t-esc="object[field]"/></dd>
-            </t>
-          </dl>
+
+        <template id="search_template">
+            <div class="btn-group o_dropdown o_hr_holidays_reports_filter_year">
+                <a type="button" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-filter"/>
+                    Year:
+                    <t t-foreach="options['list_year']" t-as="year">
+                        <t t-if="year[0] == options['selected_year']">
+                            <t t-esc="year[1]"/>
+                        </t>
+                    </t>
+                    <span class="caret"/>
+                </a>
+                <ul class="dropdown-menu o_filters_menu" role="menu">
+                    <t t-foreach="options['list_year']" t-as="year">
+                        <li t-att-title="year[1]" data-filter="selected_year" t-att-data-id="year[0]"
+                            class="js_account_reports_one_choice_filter">
+                            <a>
+                                <t t-esc="year[1]"/>
+                            </a>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+            <div class="btn-group o_dropdown o_project_forecast_reports_department_filter">
+                <a type="button" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-filter"/>
+                    Department:
+                    <t t-foreach="options['departments']" t-as="department">
+                        <t t-if="department[0] == options['selected_department']">
+                            <t t-esc="department[1]"/>
+                        </t>
+                    </t>
+                    <span class="caret"/>
+                </a>
+                <ul class="dropdown-menu o_filters_menu" role="menu">
+                    <t t-foreach="options['departments']" t-as="department">
+                        <li t-att-title="department[1]" data-filter="selected_department" t-att-data-id="department[0]"
+                            class="js_account_reports_one_choice_filter">
+                            <a>
+                                <t t-esc="department[1]"/>
+                            </a>
+                        </li>
+                    </t>
+                </ul>
+            </div>
         </template>
--->
+
+        <template id="planning_report_assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link href="/project_report/static/src/scss/style.scss" rel="stylesheet" type="text/scss"/>
+                <script type="text/javascript" src="/project_report/static/src/js/project_report.js"/>
+            </xpath>
+        </template>
     </data>
 </odoo>

@@ -14,7 +14,7 @@ class ProjectTeam(models.Model):
 class ProjectProject(models.Model):
     _inherit = 'project.project'
 
-    members_vt = fields.Many2many('res.partner', string='Members')
+    members_vt = fields.Many2many('res.partner', string='Members_VT')
     team_id_vt = fields.Many2one('project.team_vt', string="Project Team")
 
     @api.onchange('team_id_vt')
