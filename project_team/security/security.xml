@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+        <record model="ir.rule" id="project_team_vt_member_all_project_rule">
+            <field name="name">Project: project team_vt member: see all</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">
+                ['|',('team_id_vt.members.id','=',user.partner_id.id),('members_vt.id','=',user.partner_id.id)]
+            </field>
+            <field name="groups" eval="[(4,ref('project.group_project_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>
