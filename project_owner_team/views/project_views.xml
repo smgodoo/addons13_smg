@@ -21,13 +21,15 @@
                 <xpath expr="//div[hasclass('o_kanban_card_manage_pane')]" position="attributes">
                     <attribute name="groups">project_owner_team.project_owner_team</attribute>
                 </xpath>
-<!--                <xpath expr="//field[@name='partner_id']" position="after">-->
-<!--                    <field name="project_user_id"/>-->
-<!--                    <field name="current_user_id"/>-->
-<!--                </xpath>-->
-<!--                <xpath expr="//a[hasclass('o_kanban_manage_toggle_button')]" position="attributes">-->
-<!--                    <attribute name="attrs">{'invisible': [('project_user_id', '!=', 'current_user_id')]}</attribute>-->
-<!--                </xpath>-->
+                <xpath expr="//div[hasclass('o_primary')]" position="after">
+                    <div>
+                        <field name="can_edit_record" invisible="1"/>
+                    </div>
+                </xpath>
+
+                <xpath expr="//a[hasclass('o_kanban_manage_toggle_button')]" position="attributes">
+                    <attribute name="attrs">{'invisible': [('can_edit_record', '!=', True)]}</attribute>
+                </xpath>
                 <xpath expr="//a[hasclass('o_kanban_manage_toggle_button')]" position="attributes">
                     <attribute name="groups">project_owner_team.project_owner_team</attribute>
                 </xpath>
