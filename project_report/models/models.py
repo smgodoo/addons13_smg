@@ -14,6 +14,9 @@ class ProjectProject(models.Model):
     _inherit = ['project.project']
 
     department_id_vt = fields.Many2many('hr.department', string="Department")
+    project_description = fields.Html(string='Description')
+    project_budget = fields.Float(digits=(6, 2))
+    project_note = fields.Text(string='Note')
 
 
 class ProjectPlan(models.Model):

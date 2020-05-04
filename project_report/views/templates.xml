@@ -54,10 +54,10 @@
                                                 <t t-esc="project.remove_html_tag(project.project_id.project_note)"/>
                                             </t>
                                         </td>
-                                        <t t-set="start_week" t-value="project.looking_week_in_month(project.start_date)"/>
-                                        <t t-set="end_week" t-value="project.looking_week_in_month(project.end_date)"/>
-                                        <t t-set="project_start_week" t-value="project.date_range_to_write(start_week, project.start_date)"/>
-                                        <t t-set="project_end_week" t-value="project.date_range_to_write(end_week, project.end_date)"/>
+                                        <t t-set="start_week" t-value="project.looking_week_in_month(project.start_datetime)"/>
+                                        <t t-set="end_week" t-value="project.looking_week_in_month(project.end_datetime)"/>
+                                        <t t-set="project_start_week" t-value="project.date_range_to_write(start_week, project.start_datetime)"/>
+                                        <t t-set="project_end_week" t-value="project.date_range_to_write(end_week, project.end_datetime)"/>
                                         <t t-foreach="options['month_list']" t-as="month">
                                             <t t-foreach="options['week_in_month']" t-as="week">
                                                 <t t-set="number_of_index" t-value="number_of_index + 1"/>

@@ -5,6 +5,20 @@
             <field name="tag">project_plan_report</field>
             <field name="context" eval="{'model': 'planning.slot'}"/>
         </record>
+        <record model="ir.ui.view" id="project_report_project_budget_description_note">
+            <field name="name">project_report_project_budget_description_note</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='settings']/group[1]" position="before">
+                    <group>
+                        <field name="project_description"/>
+                        <field name="project_budget"/>
+                        <field name="project_note"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
         <menuitem id="project_report_menu" action="project_report_action" parent="planning.planning_menu_reporting"/>
     </data>
 </odoo>
