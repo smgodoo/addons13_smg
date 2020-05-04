@@ -40,7 +40,7 @@ class ProjectPlan(models.Model):
         employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
         departments = []
         a_dp = ('all', 'All Department')
-        if self.env.user.has_group('project_owner_team.project_owner_team_group_project_see_all') or self.env.uid == 1:
+        if self.env.user.has_group('project_owner_team.project_owner_team_group_project_see_all') or self.env.uid == 2:
             department_obj = self.env['hr.department'].search([])
         else:
             department_obj = self.env['hr.department'].search([('parent_id', '=', employee.department_id.id)])
@@ -48,7 +48,7 @@ class ProjectPlan(models.Model):
             for record in department_obj:
                 d_tp = ("{}".format(record.id), record.name)
                 departments.append(d_tp)
-        if self.env.user.has_group('project_owner_team.project_owner_team_group_project_see_all') or self.env.uid == 1:
+        if self.env.user.has_group('project_owner_team.project_owner_team_group_project_see_all') or self.env.uid == 2:
             departments.append(a_dp)
         if options:
             options['selected_year'] = options['selected_year']
@@ -56,7 +56,7 @@ class ProjectPlan(models.Model):
                 options['selected_department'] = options['selected_department']
         else:
             if self.env.user.has_group(
-                    'project_owner_team.project_owner_team_group_project_see_all') or self.env.uid == 1:
+                    'project_owner_team.project_owner_team_group_project_see_all') or self.env.uid == 2:
                 selected_dp = 'all'
             else:
                 selected_dp = employee.department_id.id
