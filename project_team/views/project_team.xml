@@ -62,7 +62,6 @@
         <record id="project_team_vt_action_tree" model="ir.actions.act_window">
             <field name="name">Projects Team Lorem</field>
             <field name="res_model">project.team_vt</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -78,7 +77,7 @@
                     <field name="team_id_vt"/>
                 </field>
                 <page name="settings" position="after">
-                    <page string="Team Lorem">
+                    <page string="Team">
                         <field name="members_vt" widget="many2many">
                             <kanban quick_create="false" create="true" delete="true">
                                 <field name="id"/>

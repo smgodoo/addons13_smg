@@ -1,34 +1,92 @@
 <odoo>
     <data>
         <template id="main_template">
-            <div class="o_planning_slog_report_page">
-                <div class="table-responsive">
-                    <table width="100%" class="table">
-                        <thead>
-                            <tr>
-                                <th rowspan="2" class="text-center smg_primary smg_report">SUB DEPARTMENT</th>
-                                <th rowspan="2" class="text-center smg_primary smg_report">ACTIVITY</th>
-                                <th rowspan="2" class="text-center smg_primary smg_report">APPOINT TO</th>
-                                <th rowspan="2" class="text-center smg_primary smg_report">SUMMARY</th>
-                                <th rowspan="2" class="text-center smg_primary smg_report">BUDGET</th>
-                                <th rowspan="2" class="text-center smg_primary smg_report">NOTES</th>
-                                <t t-foreach="options['month_list']" t-as="month">
-                                    <th colspan="4" class="text-center smg_secondary smg_report"><t t-esc="month[1]"/>
-                                    </th>
-                                </t>
-                            </tr>
-                            <tr>
-                                <t t-foreach="options['month_list']" t-as="month">
-                                    <t t-foreach="options['week_in_month']" t-as="week">
-                                        <th class="text-center smg_secondary smg_report"><t t-esc="week"/> </th>
+            <div class='o_account_reports_body'>
+                <div class="o_account_reports_page">
+                    <div class="table-responsive">
+                        <table width="100%" class="table table-bordered o_account_reports_table project_forecast" id="o_account_reports_table_id">
+                            <thead id="freeze_area">
+                                <tr>
+                                    <th rowspan="2" class="text-center smg_primary smg_report">SUB DEPARTMENT</th>
+                                    <th rowspan="2" class="text-center smg_primary smg_report">ACTIVITY</th>
+                                    <th rowspan="2" class="text-center smg_primary smg_report">APPOINT TO</th>
+                                    <th rowspan="2" class="text-center smg_primary smg_report">SUMMARY</th>
+                                    <th rowspan="2" class="text-center smg_primary smg_report">BUDGET</th>
+                                    <th rowspan="2" class="text-center smg_primary smg_report">NOTES</th>
+                                    <t t-foreach="options['month_list']" t-as="month">
+                                        <th colspan="4" class="text-center smg_secondary smg_report"><t t-esc="month[1]"/>
+                                        </th>
                                     </t>
-                                </t>
-                            </tr>
-                        </thead>
-                        <tbody>
+                                </tr>
+                                <tr>
+                                    <t t-foreach="options['month_list']" t-as="month">
+                                        <t t-foreach="options['week_in_month']" t-as="week">
+                                            <th class="text-center smg_secondary smg_report"><t t-esc="week"/> </th>
+                                        </t>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="record_row_index" t-value="1"/>
+                                <t t-foreach="options['forecast_dict']" t-as="project">
+                                    <t t-set="number_of_index" t-value="6"/>
+                                    <tr t-attf-id="{{ record_row_index }}">
+                                        <td>
+                                            <t t-foreach="project.project_id.department_id_vt" t-as="dp">
+                                                <t t-if="dp_last">
+                                                    <t t-esc="dp.name"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="dp.name"/>,&#160;
+                                                </t>
+                                            </t>
+                                        </td>
+                                        <td><t t-esc="project.project_id.name"/> </td>
+                                        <td><t t-esc="project.employee_id.name"/></td>
+                                        <td>
+                                            <t t-if="project.project_id.project_description">
+                                                <t t-esc="project.remove_html_tag(project.project_id.project_description)"/>
+                                            </t>
+                                        </td>
+                                        <td><t t-esc="project.project_id.project_budget"/> </td>
+                                        <td>
+                                            <t t-if="project.project_id.project_note">
+                                                <t t-esc="project.remove_html_tag(project.project_id.project_note)"/>
+                                            </t>
+                                        </td>
+                                        <t t-set="start_week" t-value="project.looking_week_in_month(project.start_date)"/>
+                                        <t t-set="end_week" t-value="project.looking_week_in_month(project.end_date)"/>
+                                        <t t-set="project_start_week" t-value="project.date_range_to_write(start_week, project.start_date)"/>
+                                        <t t-set="project_end_week" t-value="project.date_range_to_write(end_week, project.end_date)"/>
+                                        <t t-foreach="options['month_list']" t-as="month">
+                                            <t t-foreach="options['week_in_month']" t-as="week">
+                                                <t t-set="number_of_index" t-value="number_of_index + 1"/>
+                                                <t t-if="project_start_week == number_of_index">
+                                                    <td t-attf-id="{{ number_of_index }}" t-attf-class="{{ number_of_index }} smg_primary start_week"/>
+                                                </t>
+                                                <t t-elif="project_end_week == number_of_index">
+                                                    <td t-attf-id="{{ number_of_index }}" t-attf-class="{{ number_of_index }} smg_primary end_week"/>
+                                                </t>
+                                                <t t-elif="project_start_week == project_end_week">
+                                                    <t t-if="project_start_week == number_of_index">
+                                                        <td t-attf-class="{{ number_of_index }} start_week end_week"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <td t-attf-class="{{ number_of_index }} start_week end_week"/>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <td t-attf-class="{{ number_of_index }}"/>
+                                                </t>
 
-                        </tbody>
-                    </table>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                    <t t-set="record_row_index" t-value="record_row_index + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </template>
@@ -83,7 +141,9 @@
         <template id="planning_report_assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <link href="/project_report/static/src/scss/style.scss" rel="stylesheet" type="text/scss"/>
+                <link href="/project_report/static/src/scss/project_report.scss" rel="stylesheet" type="text/scss"/>
                 <script type="text/javascript" src="/project_report/static/src/js/project_report.js"/>
+                <script type="text/javascript" src="/project_report/static/src/js/qwebmanager.js"/>
             </xpath>
         </template>
     </data>

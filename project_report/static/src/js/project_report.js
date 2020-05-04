@@ -12,6 +12,9 @@ odoo.define('project_report.project_report', function (require) {
     var StandaloneFieldManagerMixin = require('web.StandaloneFieldManagerMixin');
     var WarningDialog = require('web.CrashManager').WarningDialog;
     var Widget = require('web.Widget');
+    var ActionManager = require('web.ActionManager');
+    var framework = require('web.framework');
+    var session = require('web.session');
 
     var QWeb = core.qweb;
     var _t = core._t;

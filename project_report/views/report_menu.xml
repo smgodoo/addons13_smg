@@ -1,0 +1,11 @@
+<odoo>
+]	<report
+	        id="smg_project_forecast_vt_report_xlsx_filter"
+	        model="planning.slot"
+	        string="Print to XLSX(filter)"
+	        report_type="xlsx"
+	        name="project_report.project_forecast_xlsx_filter"
+	        file="project_report"
+	        attachment_use="False"
+	    />
+</odoo>

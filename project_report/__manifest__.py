@@ -20,12 +20,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'project', 'project_forecast', 'planning', 'account_reports'],
+    'depends': ['base', 'project', 'project_forecast', 'planning', 'account_reports', 'odoo_report_xlsx', 'project_team'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
+        'views/report_menu.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

@@ -6,9 +6,9 @@
         <record model="ir.ui.menu" id="project.menu_project_report">
             <field name="groups_id" eval="[(4, ref('project.group_project_manager')), (4, ref('project_owner_team.project_owner_team')), (4, ref('project.group_project_user'))]"/>
         </record>
-        <record model="ir.ui.menu" id="project.project_config_settings_action">
-            <field name="groups_id" eval="[(3, ref('project_owner_team.project_owner_team'))]"/>
-        </record>
+<!--        <record model="ir.ui.menu" id="project.project_config_settings_action">-->
+<!--            <field name="groups_id" eval="[(3, ref('project_owner_team.project_owner_team'))]"/>-->
+<!--        </record>-->
         <record model="ir.ui.menu" id="project.menu_project_config">
             <field name="groups_id" eval="[(4, ref('project_owner_team.project_owner_team'))]"/>
         </record>

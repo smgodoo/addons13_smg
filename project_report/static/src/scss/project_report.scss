@@ -1,0 +1,40 @@
+.smg_report{
+    font-family: "Calibri";
+    font-weight: bold;
+}
+.smg_primary{
+    background-color:#F8C43C;
+    color: #000000;
+    vertical-align: middle !important;
+}
+.smg_secondary{
+    background-color: #203764;
+    color: #ffffff;
+    vertical-align: middle !important;
+}
+#o_account_reports_table_id{
+    &.project_forecast{
+        thead{
+            tr{
+                th{
+                    width:100px;
+                    &:first-child{
+                        width:150px;
+                    }
+                    &.smg_primary{
+                        background-color:#F8C43C;
+                    }
+                    table{
+                        width: 100%;
+                        th{
+                            width:50px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.smg_project_forecast_hidden_button{
+    display:none;
+}
