@@ -19,6 +19,7 @@
                 </xpath>
             </field>
         </record>
-        <menuitem id="project_report_menu" action="project_report_action" parent="planning.planning_menu_reporting"/>
+<!--        <menuitem id="project_report_menu" action="project_report_action" parent="planning.planning_menu_reporting"/>-->
+        <menuitem id="project_report_menu" action="project_report_action" parent="project.menu_project_report"/>
     </data>
 </odoo>
