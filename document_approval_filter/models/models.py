@@ -8,6 +8,7 @@ class ApprovalRequest(models.Model):
 
     sub_category_id = fields.Many2one('approval.category', string='Sub Category')
     department_id = fields.Many2one('hr.department', string='Department', track_visibility='onchange')
+    approval_tag = fields.Many2many('approval.tag', track_visibillity='onchange')
 
     @api.onchange('category_id')
     def onchange_category_id(self):
@@ -19,3 +20,9 @@ class ApprovalsCategory(models.Model):
     _inherit = 'approval.category'
 
     parent_id = fields.Many2one('approval.category')
+
+
+class ApprovalTag(models.Model):
+    _name = 'approval.tag'
+
+    name = fields.Char()

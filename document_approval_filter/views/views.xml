@@ -30,6 +30,7 @@
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="sub_category_id"/>
                     <field name="department_id"/>
+                    <field name="approval_tag" widget="many2many_tags"/>
                 </xpath>
             </field>
         </record>
@@ -48,5 +49,28 @@
                 </xpath>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="approval_category_search">
+            <field name="name">approval_category_search</field>
+            <field name="model">approval.category</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <filter name="filter_by_parent" string="By Parent" domain="[('parent_id', '=', False)]"/>
+                    <group string="Group By">
+                        <filter name="group_by_parent" string="By Parent" context="{'group_by': 'parent_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="approval_category_action_new_request" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">approval.category</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="approvals.approval_category_action_new_request"/>
+            <field name="context">{'search_default_filter_by_parent': 1}</field>
+        </record>
+
     </data>
 </odoo>

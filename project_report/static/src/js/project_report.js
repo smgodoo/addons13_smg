@@ -152,6 +152,18 @@ odoo.define('project_report.project_report', function (require) {
                 self.render();
             });
         },
+        render_start_and_end: function(){
+            var self = this;
+            _.each($(self.main_html).find('#o_account_reports_table_id > tbody > tr'), function(tr){
+                var start_td = $(tr).find('td.start_week').attr('id');
+                var end_td = $(tr).find('td.end_week').attr('id');
+                var end_class= $(tr).find('td.end_week');
+                if($('tr#'+$(tr).attr('id')+' td.end_week').length > 0){
+                    $('td.start_week').nextUntil('td.end_week').addClass('smg_primary');
+                }
+
+            });
+        },
         parse_reports_informations: function(values) {
             this.report_options = values.options;
             this.odoo_context = values.context;
@@ -219,6 +231,7 @@ odoo.define('project_report.project_report', function (require) {
             this.$('.o_content').find('.o_account_reports_summary_edit').hide();
             this.$('[data-toggle="tooltip"]').tooltip();
             this._add_line_classes();
+            this.render_start_and_end();
         },
         _add_line_classes: function() {
             /* Pure JS to improve performance in very cornered case (~200k lines)

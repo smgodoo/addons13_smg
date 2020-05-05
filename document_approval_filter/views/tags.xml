@@ -1,0 +1,42 @@
+<odoo>
+    <data>
+        <record id="document_approval_tag_list" model="ir.ui.view">
+            <field name="name">document_approval_tag_list</field>
+            <field name="model">approval.tag</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="document_approval_tag_form" model="ir.ui.view">
+            <field name="name">document_approval_tag_form</field>
+            <field name="model">approval.tag</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="document_approval_tag_action" model="ir.actions.act_window">
+            <field name="name">Approval tags</field>
+            <field name="res_model">approval.tag</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            id="document_approval_tag_menu"
+            parent="approvals.approvals_menu_config"
+            name="Approvals Tags"
+            action="document_approval_tag_action"
+            groups="approvals.group_approval_manager"
+            sequence="10"/>
+    </data>
+</odoo>

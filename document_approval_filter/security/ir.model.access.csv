@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_document_approval_filter_document_approval_filter,document_approval_filter.document_approval_filter,model_document_approval_filter_document_approval_filter,base.group_user,1,1,1,1
+access_approval_approver_user,access_approval_approver,model_approval_tag,approvals.group_approval_user,1,1,1,0
+access_approval_approver_manager,access_approval_approver_manager,model_approval_tag,approvals.group_approval_manager,1,1,1,1
