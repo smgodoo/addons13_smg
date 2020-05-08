@@ -1,0 +1,44 @@
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="sign_category_action">
+            <field name="name">Sign Category</field>
+            <field name="res_model">sign.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="sign_category_menu" name="Sign Category"
+                  parent="sign.menu_sign_configuration"
+                  action="sign_category_action"/>
+
+        <record id="sign_edit_from_inherit" model="ir.ui.view">
+            <field name="name">sign_edit_from_inherit</field>
+            <field name="model">sign.template</field>
+            <field name="inherit_id" ref="sign.sign_template_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tag_ids']" position="before">
+                    <field name="category_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sign_from_inherit_search" model="ir.ui.view">
+            <field name="name">sign_from_inherit_search</field>
+            <field name="model">sign.template</field>
+            <field name="inherit_id" ref="sign.sign_template_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/filter[@name='archive']" position="after">
+                    <group expand="0" string="Group By">
+                        <filter string="Category" name="group_by_category" context="{'group_by': 'category_id'}"></filter>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sign.sign_template_action" model="ir.actions.act_window">
+            <field name="context">{'search_default_group_by_category': 1}</field>
+        </record>
+
+    </data>
+</odoo>
+
