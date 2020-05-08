@@ -3,8 +3,9 @@
     'name': "ticket_follower_team",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Add field follower_member to Ticket Team configure
+        When any user create ticket and select any team, then 
+        those follower members will become ticket follower""",
 
     'description': """
         Long description of module's purpose
@@ -20,7 +21,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'helpdesk'],
 
     # always loaded
     'data': [
