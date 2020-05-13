@@ -28,7 +28,7 @@
             <field name="inherit_id" ref="approvals.approval_request_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="sub_category_id"/>
+<!--                    <field name="sub_category_id"/>-->
                     <field name="department_id"/>
                     <field name="approval_tag" widget="many2many_tags"/>
                 </xpath>
