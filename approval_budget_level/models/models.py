@@ -50,9 +50,9 @@ class ApprovalRequest(models.Model):
     request_status = fields.Selection([
         ('new', 'To Submit'),
         ('pending', 'Submitted'),
+        ('on_hold', ' On-Hold'),
         ('approved', 'Approved'),
         ('refused', 'Refused'),
-        ('on_hold', ' On-Hold'),
         ('cancel', 'Cancel')], default="new", compute="_compute_request_status", store=True, compute_sudo=True,
         group_expand='_read_group_request_status')
     user_status = fields.Selection([
