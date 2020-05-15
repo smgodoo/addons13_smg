@@ -1,5 +1,6 @@
 <odoo>
     <data>
+
         <record id="document_approval_sub_category_form" model="ir.ui.view">
             <field name="name">document_approval_sub_category_form</field>
             <field name="model">approval.category</field>
@@ -72,6 +73,17 @@
             <field name="context">{
                 'search_default_filter_by_parent_is_set': 1,
                 'search_default_group_by_parent': 1}
+            </field>
+        </record>
+
+        <record id="approval_request_view_form_inherit" model="ir.ui.view">
+            <field name="name">approval_request_view_form_inherit</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_approve']" position="after">
+                    <button name="action_on_hold" string="On Hold" type="object" attrs="{'invisible':[('user_status','!=','pending')]}"/>
+                </xpath>
             </field>
         </record>
 
