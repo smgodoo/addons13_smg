@@ -58,27 +58,53 @@
             <field name="model">approval.category</field>
             <field name="inherit_id" ref="approvals.approval_category_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='options']" position="after">
-                    <page string="Budget Range" name="budget_configure">
-                        <field name="budget_lines">
-                            <tree>
-                                <field name="name"/>
-                                <field name="budget_min"/>
-                                <field name="budget_max"/>
-                                <field name="approver"/>
-                            </tree>
-                            <form>
-                                <sheet>
-                                    <group>
-                                        <field name="name"/>
-                                        <field name="budget_min"/>
-                                        <field name="budget_max"/>
-                                        <field name="approver"/>
-                                    </group>
-                                </sheet>
-                            </form>
-                        </field>
-                    </page>
+                <xpath expr="//field[@name='is_manager_approver']" position="after">
+                    <field name="is_hod_approver"/>
+                    <field name="is_ceo_approver"/>
+                </xpath>
+<!--                <xpath expr="//page[@name='options']" position="after">-->
+<!--                    <page string="Budget Range" name="budget_configure">-->
+<!--                        <field name="budget_lines">-->
+<!--                            <tree>-->
+<!--                                <field name="name"/>-->
+<!--                                <field name="budget_min"/>-->
+<!--                                <field name="budget_max"/>-->
+<!--                                <field name="approver"/>-->
+<!--                            </tree>-->
+<!--                            <form>-->
+<!--                                <sheet>-->
+<!--                                    <group>-->
+<!--                                        <field name="name"/>-->
+<!--                                        <field name="budget_min"/>-->
+<!--                                        <field name="budget_max"/>-->
+<!--                                        <field name="approver"/>-->
+<!--                                    </group>-->
+<!--                                </sheet>-->
+<!--                            </form>-->
+<!--                        </field>-->
+<!--                    </page>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+
+        <record id="employee_inherit_form" model="ir.ui.view">
+            <field name="name">employee_inherit_form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='parent_id']" position="after">
+                    <field name="hod"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="res_company_inherit_form" model="ir.ui.view">
+            <field name="name">res_company_inherit_form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="company_ceo"/>
                 </xpath>
             </field>
         </record>
