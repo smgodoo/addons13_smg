@@ -61,7 +61,6 @@
                 <search>
                     <field name="name"/>
                     <filter name="filter_by_parent_is_set" string="Parent is set" domain="[('parent_id', '!=', False)]"/>
-                    <filter name="filter_by_parent" string="By Parent" domain="[('parent_id', '=', False)]"/>
                     <group string="Group By">
                         <filter name="group_by_parent" string="By Parent" context="{'group_by': 'parent_id'}"/>
                     </group>

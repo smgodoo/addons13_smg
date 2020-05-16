@@ -10,7 +10,12 @@ class ResCompany(models.Model):
 
 class Employee(models.Model):
     _inherit = 'hr.employee'
-    hod = fields.Many2one('res.users', string='Head of department')
+    hod = fields.Many2one('hr.employee', string='Head of department')
+
+
+class EmployeePublic(models.Model):
+    _inherit = 'hr.employee.public'
+    hod = fields.Many2one('hr.employee.public', string='Head of department')
 
 
 class ApprovalBudget(models.Model):
@@ -101,8 +106,8 @@ class ApprovalRequest(models.Model):
             if employee.parent_id.user_id:
                 new_users |= employee.parent_id.user_id
         if self.category_id.is_hod_approver:
-            if employee.hod:
-                new_users |= employee.hod
+            if employee.hod.user_id:
+                new_users |= employee.hod.user_id
         if self.category_id.is_ceo_approver:
             company = self.env['res.company'].search([('id', '=', employee.company_id.id)], limit=1)
             if company.company_ceo:
