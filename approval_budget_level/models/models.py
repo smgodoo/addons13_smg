@@ -43,31 +43,9 @@ class EmployeePublic(models.Model):
     hod = fields.Many2one('hr.employee.public', string='Head of department')
 
 
-class ApprovalBudget(models.Model):
-    _name = 'approval.budget'
-
-    name = fields.Char()
-    budget_min = fields.Integer()
-    budget_max = fields.Integer()
-    approver = fields.Selection([
-        ('manager', 'Manager'),
-        ('head_department', 'Head Department'),
-        ('ceo', 'CEO')
-    ])
-    request_id = fields.Many2one(
-        comodel_name="approval.category",
-        string="Approval type request",
-        ondelete="cascade",
-        readonly=True,
-    )
-
-
 class ApprovalType(models.Model):
     _inherit = 'approval.category'
     department_s = fields.Many2one(comodel_name='approval.department', inverse_name="request_id")
-    budget_lines = fields.One2many(
-        comodel_name="approval.budget",
-        inverse_name="request_id")
     is_hod_approver = fields.Boolean(string="Head Of Department",
                                      help="Automatically add Head Of Department as approver on the request.")
     is_ceo_approver = fields.Boolean(string="CEO",
