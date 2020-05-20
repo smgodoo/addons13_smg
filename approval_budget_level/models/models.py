@@ -13,6 +13,31 @@ class Employee(models.Model):
     hod = fields.Many2one('hr.employee', string='Head of department')
 
 
+class ApprovalSubject(models.Model):
+    _name = 'approval.subject'
+    _description = "Apply title for approval.request"
+    name = fields.Char(required=True)
+    department_id = fields.Many2one('hr.department', required=True)
+
+
+class ApprovalRequestTitle(models.Model):
+    _inherit = 'approval.request'
+    name = fields.Char(required=False)
+    approval_subject = fields.Many2one('approval.subject', required=True)
+
+    @api.onchange('department_id')
+    def onchange_department_id(self):
+        self.approval_subject = []
+        return {'domain': {'approval_subject': [('department_id', 'in', [self.department_id.id])]}}
+
+    @api.model
+    def create(self, vals):
+        if vals.get('approval_subject'):
+            subject = self.env['approval.subject'].search([('id', '=', vals.get('approval_subject'))], limit=1)
+            vals['name'] = subject.name
+        return super(ApprovalRequestTitle, self).create(vals)
+
+
 class EmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
     hod = fields.Many2one('hr.employee.public', string='Head of department')
@@ -39,14 +64,32 @@ class ApprovalBudget(models.Model):
 
 class ApprovalType(models.Model):
     _inherit = 'approval.category'
-
+    department_s = fields.Many2one(comodel_name='approval.department', inverse_name="request_id")
     budget_lines = fields.One2many(
         comodel_name="approval.budget",
-        inverse_name="request_id", )
+        inverse_name="request_id")
     is_hod_approver = fields.Boolean(string="Head Of Department",
                                      help="Automatically add Head Of Department as approver on the request.")
     is_ceo_approver = fields.Boolean(string="CEO",
                                      help="Automatically add CEO as approver on the request.")
+
+    def create_request(self):
+        self.ensure_one()
+        employee = self.env['hr.employee.public'].search([('user_id', '=', self.env.user.id)], limit=1)
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "approval.request",
+            "views": [[False, "form"]],
+            "context": {
+                'form_view_initial_mode': 'edit',
+                'hide_name': True,
+                'default_name': self.name,
+                'default_department_id': employee.department_id.id,
+                'default_category_id': self.id,
+                'default_request_owner_id': self.env.user.id,
+                'default_request_status': 'new'
+            },
+        }
 
 
 class ApprovalRequest(models.Model):

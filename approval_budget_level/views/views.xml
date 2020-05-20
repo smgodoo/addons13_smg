@@ -63,21 +63,17 @@
                     <field name="is_ceo_approver"/>
                 </xpath>
 <!--                <xpath expr="//page[@name='options']" position="after">-->
-<!--                    <page string="Budget Range" name="budget_configure">-->
-<!--                        <field name="budget_lines">-->
+<!--                    <page string="Department" name="department_configure">-->
+<!--                        <field name="department_s">-->
 <!--                            <tree>-->
 <!--                                <field name="name"/>-->
-<!--                                <field name="budget_min"/>-->
-<!--                                <field name="budget_max"/>-->
-<!--                                <field name="approver"/>-->
+<!--                                <field name="department"/>-->
 <!--                            </tree>-->
 <!--                            <form>-->
 <!--                                <sheet>-->
 <!--                                    <group>-->
 <!--                                        <field name="name"/>-->
-<!--                                        <field name="budget_min"/>-->
-<!--                                        <field name="budget_max"/>-->
-<!--                                        <field name="approver"/>-->
+<!--                                        <field name="department"/>-->
 <!--                                    </group>-->
 <!--                                </sheet>-->
 <!--                            </form>-->
@@ -105,6 +101,35 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="before">
                     <field name="company_ceo"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="approval_category_search" model="ir.ui.view">
+            <field name="name">approval_category_search</field>
+            <field name="model">approval.category</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="name"/>
+                    <filter name="filter_by_parent_is_set" string="Parent is set" domain="[('parent_id', '!=', False)]"/>
+                    <group string="Group By">
+                        <filter name="group_by_parent" string="By Parent" context="{'group_by': 'parent_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="approval_request_inherit_form" model="ir.ui.view">
+            <field name="name">approval_request_inherit_form</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="attrs">{'invisible':1}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="approval_subject"/>
                 </xpath>
             </field>
         </record>

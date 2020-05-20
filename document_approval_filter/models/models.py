@@ -7,7 +7,7 @@ class ApprovalRequest(models.Model):
     _inherit = ['approval.request']
 
     sub_category_id = fields.Many2one('approval.category', string='Sub Category')
-    department_id = fields.Many2one('hr.department', string='Department', track_visibility='onchange')
+    department_id = fields.Many2one('hr.department', string='Department', track_visibility='onchange', required=True)
     approval_tag = fields.Many2many('approval.tag', track_visibillity='onchange')
 
     @api.onchange('category_id')

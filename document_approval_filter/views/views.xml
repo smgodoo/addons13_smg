@@ -28,7 +28,7 @@
             <field name="model">approval.request</field>
             <field name="inherit_id" ref="approvals.approval_request_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='category_id']" position="after">
+                <xpath expr="//field[@name='category_id']" position="before">
 <!--                    <field name="sub_category_id"/>-->
                     <field name="department_id"/>
                     <field name="approval_tag" widget="many2many_tags"/>
@@ -56,20 +56,6 @@
                         <filter string="Requester" name="group_by_category" context="{'group_by': 'request_owner_id'}"></filter>
                     </group>
                 </xpath>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="approval_category_search">
-            <field name="name">approval_category_search</field>
-            <field name="model">approval.category</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="name"/>
-                    <filter name="filter_by_parent_is_set" string="Parent is set" domain="[('parent_id', '!=', False)]"/>
-                    <group string="Group By">
-                        <filter name="group_by_parent" string="By Parent" context="{'group_by': 'parent_id'}"/>
-                    </group>
-                </search>
             </field>
         </record>
 
