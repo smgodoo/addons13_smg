@@ -134,5 +134,31 @@
             </field>
         </record>
 
+        <record id="approval_request_subject_action" model="ir.actions.act_window">
+            <field name="name">All Approvals subjects</field>
+            <field name="res_model">approval.subject</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="approval_request_subject_search" model="ir.ui.view">
+            <field name="name">approval_request_subject_search</field>
+            <field name="model">approval.subject</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <searchpanel>
+                        <field name="department_id"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <menuitem
+            id="approvals_subject_menu"
+            parent="approvals.approvals_menu_config"
+            name="Approval Subject"
+            action="approval_request_subject_action"
+            sequence="10"/>
+
     </data>
 </odoo>
