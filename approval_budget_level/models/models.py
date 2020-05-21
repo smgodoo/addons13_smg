@@ -17,7 +17,7 @@ class ApprovalSubject(models.Model):
     _name = 'approval.subject'
     _description = "Apply title for approval.request"
     name = fields.Char(required=True)
-    department_id = fields.Many2one('hr.department', required=True)
+    department_id = fields.Many2one('hr.department')
 
 
 class ApprovalRequestTitle(models.Model):
@@ -28,7 +28,8 @@ class ApprovalRequestTitle(models.Model):
     @api.onchange('department_id')
     def onchange_department_id(self):
         self.approval_subject = []
-        return {'domain': {'approval_subject': [('department_id', 'in', [self.department_id.id])]}}
+        return {'domain': {'approval_subject': ['|', ('department_id', 'in', [self.department_id.id]),
+                                                ('department_id', '=', False)]}}
 
     @api.model
     def create(self, vals):
