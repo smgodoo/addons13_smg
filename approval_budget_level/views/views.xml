@@ -9,6 +9,11 @@
                 <xpath expr="//field[@name='is_manager_approver']" position="after">
                     <field name="is_hod_approver"/>
                     <field name="is_ceo_approver"/>
+                    <field name="has_follower_after_approved"/>
+                    <field name="followers" widget="many2many_tags" attrs="{
+                        'required':[('has_follower_after_approved','=',True)],
+                        'invisible': [('has_follower_after_approved', '=', False)]
+                    }"/>
                 </xpath>
             </field>
         </record>

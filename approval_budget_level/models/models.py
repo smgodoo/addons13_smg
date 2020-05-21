@@ -50,6 +50,8 @@ class ApprovalType(models.Model):
                                      help="Automatically add Head Of Department as approver on the request.")
     is_ceo_approver = fields.Boolean(string="CEO",
                                      help="Automatically add CEO as approver on the request.")
+    has_follower_after_approved = fields.Boolean(default=False)
+    followers = fields.Many2many('res.partner')
 
     def create_request(self):
         self.ensure_one()
@@ -112,6 +114,11 @@ class ApprovalRequest(models.Model):
                     status = 'on_hold'
                 elif status_lst.count('approved') >= minimal_approver:
                     status = 'approved'
+                    if request.category_id.has_follower_after_approved:
+                        ids = []
+                        for record in request.category_id.followers.ids:
+                            ids.append(record)
+                        request.message_subscribe(ids)
                 else:
                     status = 'pending'
             else:
