@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <record id="approval_subject_manager_unlink" model="ir.rule">
+            <field name="name">Approval subject Manger unlink</field>
+            <field name="model_id" ref="model_approval_subject"/>
+            <field name="groups" eval="[(4, ref('approvals.group_approval_manager'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+    </data>
+</odoo>
