@@ -9,9 +9,9 @@
             <field name="perm_create" eval="1"/>
             <field name="perm_unlink" eval="1"/>
         </record>
-        s
+
         <record id="approval_subject_user_unlink" model="ir.rule">
-            <field name="name">Approval subject Manger unlink</field>
+            <field name="name">Approval subject User</field>
             <field name="model_id" ref="model_approval_subject"/>
             <field name="groups" eval="[(4, ref('approvals.group_approval_user'))]"/>
             <field name="perm_read" eval="1"/>

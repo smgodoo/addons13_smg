@@ -11,6 +11,8 @@ class ResCompany(models.Model):
 class Employee(models.Model):
     _inherit = 'hr.employee'
     hod = fields.Many2one('hr.employee', string='Head of department')
+    supervisor = fields.Many2one('hr.employee', string='Supervisor')
+    senior = fields.Many2one('hr.employee', string='Senior')
 
 
 class ApprovalSubject(models.Model):
@@ -42,6 +44,8 @@ class ApprovalRequestTitle(models.Model):
 class EmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
     hod = fields.Many2one('hr.employee.public', string='Head of department')
+    supervisor = fields.Many2one('hr.employee.public', string='Supervisor')
+    senior = fields.Many2one('hr.employee.public', string='Senior')
 
 
 class ApprovalType(models.Model):
@@ -51,6 +55,11 @@ class ApprovalType(models.Model):
                                      help="Automatically add Head Of Department as approver on the request.")
     is_ceo_approver = fields.Boolean(string="CEO",
                                      help="Automatically add CEO as approver on the request.")
+    is_supervisor = fields.Boolean(string='Supervisor', help="Automatically add Supervisor as approver")
+    is_senior = fields.Boolean(string='Senior',
+                               help="Automatically add Senior as approver")
+    is_manual_approval = fields.Boolean(string="Manual ?")
+
     has_follower_after_approved = fields.Boolean(default=False)
     followers = fields.Many2many('res.partner')
 
@@ -91,6 +100,29 @@ class ApprovalRequest(models.Model):
         ('refused', 'Refused'),
         ('on_hold', ' On-Hold'),
         ('cancel', 'Cancel')], compute="_compute_user_status")
+    show_final_approval = fields.Boolean(default=False, compute='_compute_final_approval_button')
+
+    def _compute_final_approval_button(self):
+        company = self.env['res.company'].search([('id', '=', self.env.user.company_id.id)])
+        employee_obj = self.env['hr.employee']
+        show_final_approval = ['pending', 'on_hold']
+        for record in self:
+            r_status = False
+            employee = employee_obj.search([('user_id', '=', record.request_owner_id.id)])
+            if employee:
+                if record.category_id.is_ceo_approver:
+                    if company.company_ceo and company.company_ceo.id == self.env.user.id:
+                        if record.request_status in show_final_approval:
+                            r_status = True
+                if record.category_id.is_hod_approver:
+                    if employee.hod and employee.hod.user_id.id == self.env.user.id:
+                        if record.request_status in show_final_approval:
+                            r_status = True
+                if record.category_id.is_manager_approver:
+                    if employee.parent_id and employee.parent_id.user_id.id == self.env.user.id:
+                        if record.request_status in show_final_approval:
+                            r_status = True
+            record.show_final_approval = r_status
 
     @api.depends('approver_ids.status')
     def _compute_user_status(self):
@@ -104,26 +136,41 @@ class ApprovalRequest(models.Model):
             status_lst = request.mapped('approver_ids.status')
             minimal_approver = request.approval_minimum if len(status_lst) >= request.approval_minimum else len(
                 status_lst)
-            if status_lst:
-                if status_lst.count('cancel'):
-                    status = 'cancel'
-                elif status_lst.count('refused'):
-                    status = 'refused'
-                elif status_lst.count('new'):
-                    status = 'new'
-                elif status_lst.count('on_hold'):
-                    status = 'on_hold'
-                elif status_lst.count('approved') >= minimal_approver:
-                    status = 'approved'
-                    if request.category_id.has_follower_after_approved:
-                        ids = []
-                        for record in request.category_id.followers.ids:
-                            ids.append(record)
-                        request.message_subscribe(ids)
+            if request.category_id.is_manual_approval:
+                if status_lst:
+                    if status_lst.count('cancel'):
+                        status = 'cancel'
+                    elif status_lst.count('refused'):
+                        status = 'refused'
+                    elif status_lst.count('new'):
+                        status = 'new'
+                    elif status_lst.count('on_hold'):
+                        status = 'on_hold'
+                    else:
+                        status = 'pending'
                 else:
-                    status = 'pending'
+                    status = 'new'
             else:
-                status = 'new'
+                if status_lst:
+                    if status_lst.count('cancel'):
+                        status = 'cancel'
+                    elif status_lst.count('refused'):
+                        status = 'refused'
+                    elif status_lst.count('new'):
+                        status = 'new'
+                    elif status_lst.count('on_hold'):
+                        status = 'on_hold'
+                    elif status_lst.count('approved') >= minimal_approver:
+                        status = 'approved'
+                        if request.category_id.has_follower_after_approved:
+                            ids = []
+                            for record in request.category_id.followers.ids:
+                                ids.append(record)
+                            request.message_subscribe(ids)
+                    else:
+                        status = 'pending'
+                else:
+                    status = 'new'
             request.request_status = status
 
     @api.onchange('category_id', 'request_owner_id')
@@ -131,9 +178,19 @@ class ApprovalRequest(models.Model):
         current_users = self.approver_ids.mapped('user_id')
         new_users = self.category_id.user_ids
         employee = self.env['hr.employee'].search([('user_id', '=', self.request_owner_id.id)], limit=1)
+
         if self.category_id.is_manager_approver:
-            if employee.parent_id.user_id:
+            if employee.parent_id and employee.parent_id.user_id:
                 new_users |= employee.parent_id.user_id
+
+        if self.category_id.is_senior:
+            if employee.senior and employee.senior.user_id:
+                new_users |= employee.senior.user_id
+
+        if self.category_id.is_supervisor:
+            if employee.supervisor and employee.supervisor.user_id:
+                new_users |= employee.supervisor.user_id
+
         if self.category_id.is_hod_approver:
             if employee.hod.user_id:
                 new_users |= employee.hod.user_id
@@ -141,7 +198,6 @@ class ApprovalRequest(models.Model):
             company = self.env['res.company'].search([('id', '=', employee.company_id.id)], limit=1)
             if company.company_ceo:
                 new_users |= company.company_ceo
-        print(new_users)
         for user in new_users - current_users:
             self.approver_ids += self.env['approval.approver'].new({
                 'user_id': user.id,
@@ -154,6 +210,14 @@ class ApprovalRequest(models.Model):
                 lambda approver: approver.user_id == self.env.user
             )
         approver.write({'status': 'on_hold'})
+        self.sudo()._get_user_approval_activities(user=self.env.user).action_feedback()
+
+    def approval_action_final(self, approver=None):
+        if not isinstance(approver, models.BaseModel):
+            approver = self.mapped('approver_ids').filtered(
+                lambda approver: approver.user_id == self.env.user
+            )
+        approver.write({'status': 'approved'})
         self.sudo()._get_user_approval_activities(user=self.env.user).action_feedback()
 
 

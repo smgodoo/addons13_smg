@@ -6,6 +6,11 @@
             <field name="model">approval.category</field>
             <field name="inherit_id" ref="approvals.approval_category_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_manager_approver']" position="before">
+                    <field name="is_manual_approval"/>
+                    <field name="is_senior"/>
+                    <field name="is_supervisor"/>
+                </xpath>
                 <xpath expr="//field[@name='is_manager_approver']" position="after">
                     <field name="is_hod_approver"/>
                     <field name="is_ceo_approver"/>
@@ -23,6 +28,10 @@
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='parent_id']" position="before">
+                    <field name="senior"/>
+                    <field name="supervisor"/>
+                </xpath>
                 <xpath expr="//field[@name='parent_id']" position="after">
                     <field name="hod"/>
                 </xpath>
@@ -65,6 +74,7 @@
                 </xpath>
                 <xpath expr="//field[@name='request_owner_id']" position="before">
                     <field name="approval_subject"/>
+                    <field name="show_final_approval" invisible="1"/>
                 </xpath>
             </field>
         </record>
@@ -85,6 +95,18 @@
                         <field name="department_id"/>
                     </searchpanel>
                 </search>
+            </field>
+        </record>
+
+        <record id="approval_request_view_form_inherit_button" model="ir.ui.view">
+            <field name="name">approval_request_view_form_inherit_button</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_approve']" position="after">
+                    <button name="approval_action_final" string="Final Approve" type="object" attrs="{
+                    'invisible':[('show_final_approval','=', False)]}"/>
+                </xpath>
             </field>
         </record>
 
