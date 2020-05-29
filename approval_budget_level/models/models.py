@@ -101,6 +101,7 @@ class ApprovalRequest(models.Model):
         ('on_hold', ' On-Hold'),
         ('cancel', 'Cancel')], compute="_compute_user_status")
     show_final_approval = fields.Boolean(default=False, compute='_compute_final_approval_button')
+    final_approve = fields.Boolean(default=False, tracking=True)
 
     def _compute_final_approval_button(self):
         company = self.env['res.company'].search([('id', '=', self.env.user.company_id.id)])
@@ -112,11 +113,13 @@ class ApprovalRequest(models.Model):
             if employee:
                 if record.category_id.is_ceo_approver:
                     if company.company_ceo and company.company_ceo.id == self.env.user.id:
-                        if record.request_status in show_final_approval:
+                        if record.request_status in show_final_approval and \
+                                record.category_id.is_manual_approval is True:
                             r_status = True
                 if record.category_id.is_hod_approver:
                     if employee.hod and employee.hod.user_id.id == self.env.user.id:
-                        if record.request_status in show_final_approval:
+                        if record.request_status in show_final_approval and \
+                                record.category_id.is_manual_approval is True:
                             r_status = True
                 if record.category_id.is_manager_approver:
                     if employee.parent_id and employee.parent_id.user_id.id == self.env.user.id:
@@ -213,6 +216,7 @@ class ApprovalRequest(models.Model):
         self.sudo()._get_user_approval_activities(user=self.env.user).action_feedback()
 
     def approval_action_final(self, approver=None):
+        self.final_approve = True
         if not isinstance(approver, models.BaseModel):
             approver = self.mapped('approver_ids').filtered(
                 lambda approver: approver.user_id == self.env.user
