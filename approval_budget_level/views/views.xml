@@ -105,7 +105,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_approve']" position="after">
                     <button name="approval_action_final" string="Final Approve" type="object" attrs="{
-                    'invisible':[('show_final_approval','=', False)]}"/>
+                    'invisible':[('show_final_approval','=', False)]}"
+                            confirm="Are you sure to make final approval?"
+                    />
                 </xpath>
             </field>
         </record>
