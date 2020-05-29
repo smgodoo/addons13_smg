@@ -153,6 +153,8 @@ class ApprovalRequest(models.Model):
                         status = 'pending'
                 else:
                     status = 'new'
+                if request.final_approve is True:
+                    status = 'approved'
             else:
                 if status_lst:
                     if status_lst.count('cancel'):
@@ -215,8 +217,17 @@ class ApprovalRequest(models.Model):
         approver.write({'status': 'on_hold'})
         self.sudo()._get_user_approval_activities(user=self.env.user).action_feedback()
 
+    def action_withdraw(self, approver=None):
+        self.final_approve = False
+        if not isinstance(approver, models.BaseModel):
+            approver = self.mapped('approver_ids').filtered(
+                lambda approver: approver.user_id == self.env.user
+            )
+        approver.write({'status': 'pending'})
+
     def approval_action_final(self, approver=None):
         self.final_approve = True
+        self.request_status = 'approved'
         if not isinstance(approver, models.BaseModel):
             approver = self.mapped('approver_ids').filtered(
                 lambda approver: approver.user_id == self.env.user
