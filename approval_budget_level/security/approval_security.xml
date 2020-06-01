@@ -19,5 +19,15 @@
             <field name="perm_create" eval="1"/>
             <field name="perm_unlink" eval="0"/>
         </record>
+
+        <record id="approval_budget_line_user_unlink" model="ir.rule">
+            <field name="name">Approval budget lines User</field>
+            <field name="model_id" ref="model_approval_budget_line"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
     </data>
 </odoo>

@@ -8,6 +8,27 @@ class ResCompany(models.Model):
     company_ceo = fields.Many2one('res.users', string='Company CEO')
 
 
+class ApprovalTypeBudgetLine(models.Model):
+    _name = 'approval.budget.line'
+
+    name = fields.Char(required=True)
+    sequence_number = fields.Integer()
+    max_budget = fields.Float()
+    approval_level = fields.Selection(selection=[
+        ('manager_level', 'Manager'),
+        ('manager_and_hod', 'Manager and Head of department'),
+        ('ceo_level', 'CEO')
+    ], default='manager_level')
+    budget_type_id = fields.Many2one('approval.category',
+                                     string='Approval Type Reference',
+                                     required=True, ondelete='cascade',
+                                     index=True,
+                                     copy=False)
+    _sql_constraints = [
+        ('sequence_number', 'unique (sequence_number)', 'The sequence_number already Exists!'),
+    ]
+
+
 class Employee(models.Model):
     _inherit = 'hr.employee'
     hod = fields.Many2one('hr.employee', string='Head of department')
@@ -62,6 +83,9 @@ class ApprovalType(models.Model):
 
     has_follower_after_approved = fields.Boolean(default=False)
     followers = fields.Many2many('res.partner')
+    approval_budget_line = fields.One2many('approval.budget.line', 'budget_type_id', string='Budget Lines',
+                                           copy=True,
+                                           auto_join=True)
 
     def create_request(self):
         self.ensure_one()
@@ -102,6 +126,7 @@ class ApprovalRequest(models.Model):
         ('cancel', 'Cancel')], compute="_compute_user_status")
     show_final_approval = fields.Boolean(default=False, compute='_compute_final_approval_button')
     final_approve = fields.Boolean(default=False, tracking=True)
+    minimal_approval = fields.Integer(default=1)
 
     def _compute_final_approval_button(self):
         company = self.env['res.company'].search([('id', '=', self.env.user.company_id.id)])
@@ -137,8 +162,12 @@ class ApprovalRequest(models.Model):
     def _compute_request_status(self):
         for request in self:
             status_lst = request.mapped('approver_ids.status')
-            minimal_approver = request.approval_minimum if len(status_lst) >= request.approval_minimum else len(
-                status_lst)
+            if not self.category_id.approval_budget_line:
+                minimal_approver = request.approval_minimum if len(status_lst) >= request.approval_minimum else len(
+                    status_lst)
+            else:
+                minimal_approver = self.minimal_approval
+            print(minimal_approver)
             if request.category_id.is_manual_approval:
                 if status_lst:
                     if status_lst.count('cancel'):
@@ -165,6 +194,7 @@ class ApprovalRequest(models.Model):
                         status = 'new'
                     elif status_lst.count('on_hold'):
                         status = 'on_hold'
+
                     elif status_lst.count('approved') >= minimal_approver:
                         status = 'approved'
                         if request.category_id.has_follower_after_approved:
@@ -234,6 +264,49 @@ class ApprovalRequest(models.Model):
             )
         approver.write({'status': 'approved'})
         self.sudo()._get_user_approval_activities(user=self.env.user).action_feedback()
+
+    @api.onchange('amount')
+    def _onchange_amount(self):
+        if self.category_id.approval_budget_line:
+            self.approver_ids = False
+            new_users = self.category_id.user_ids
+            current_users = self.approver_ids.mapped('user_id')
+            employee_obj = self.env['hr.employee'].search([('user_id', '=', self.request_owner_id.id)])
+            company_obj = self.env['res.company'].search([('id', '=', self.env.user.company_id.id)])
+            max_budget = 0
+            minimal_approver = 0
+
+            for record in self.category_id.approval_budget_line:
+                if max_budget < record.max_budget:
+                    max_budget = record.max_budget
+            for record in self.category_id.approval_budget_line:
+                if self.amount > max_budget:
+                    self.minimal_approval = 3
+                    if company_obj and company_obj.company_ceo:
+                        new_users |= company_obj.company_ceo
+                    if employee_obj and employee_obj.hod.user_id:
+                        new_users |= employee_obj.hod.user_id
+                    if employee_obj and employee_obj.parent_id.user_id:
+                        new_users |= employee_obj.parent_id.user_id
+                    break
+                elif (self.amount <= record.max_budget) and (record.sequence_number == 1):
+                    if employee_obj and employee_obj.parent_id.user_id:
+                        new_users |= employee_obj.parent_id.user_id
+                    break
+                else:
+                    self.minimal_approval = 2
+                    if employee_obj and employee_obj.parent_id.user_id:
+                        new_users |= employee_obj.parent_id.user_id
+                    if employee_obj and employee_obj.hod.user_id:
+                        new_users |= employee_obj.hod.user_id
+                    break
+
+            if new_users:
+                for user in new_users - current_users:
+                    self.approver_ids += self.env['approval.approver'].new({
+                        'user_id': user.id,
+                        'request_id': self.id,
+                        'status': 'new'})
 
 
 class ApprovalApprover(models.Model):

@@ -20,6 +20,28 @@
                         'invisible': [('has_follower_after_approved', '=', False)]
                     }"/>
                 </xpath>
+                <xpath expr="//page[@name='options']" position="after">
+                    <page name="budget_lines" string="Budget Lines">
+                        <field name="approval_budget_line" widget="section_and_note_one2many"
+                                mode="tree,kanban">
+                            <form>
+                                <field name="name"/>
+                                <field name="sequence_number"/>
+                                <field name="max_budget"/>
+                                <field name="approval_level"/>
+                            </form>
+                            <tree string="Budget lines" editable="bottom">
+                                <control>
+                                    <create name="add_budget_line_control" string="Add a Budget line"/>
+                                </control>
+                                <field name="name"/>
+                                <field name="sequence_number"/>
+                                <field name="max_budget"/>
+                                <field name="approval_level"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
             </field>
         </record>
 

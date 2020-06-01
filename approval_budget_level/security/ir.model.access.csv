@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_approval_user_approval_subject,access_approval_subject_user,model_approval_subject,approvals.group_approval_user,1,1,1,0
 access_approval_manager_approval_subject,access_approval_subject_manager,model_approval_subject,approvals.group_approval_manager,1,1,1,1
+access_approval_budget_line_access,approval_budget_line_access_users,model_approval_budget_line,base.group_user,1,1,1,1
